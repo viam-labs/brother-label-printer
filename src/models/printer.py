@@ -10,7 +10,7 @@ if not hasattr(Image, "ANTIALIAS"):
 from brother_ql.conversion import convert
 from brother_ql.labels import LabelsManager
 from brother_ql.raster import BrotherQLRaster
-from viam.components.generic import *
+from viam.components.generic import Generic
 from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import Geometry, ResourceName
 from viam.resource.base import ResourceBase
