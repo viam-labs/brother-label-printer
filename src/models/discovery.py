@@ -66,6 +66,7 @@ class PrinterDiscovery(Discovery, EasyResource):
             return []
 
         from brother_ql.models import ModelsManager
+
         known_models = {m.identifier for m in ModelsManager().iter_elements()}
 
         configs: List[ComponentConfig] = []
@@ -74,7 +75,9 @@ class PrinterDiscovery(Discovery, EasyResource):
             if dev.get("serial"):
                 identifier += f"/{dev['serial']}"
 
-            printer_model = self._detect_model_from_name(dev.get("name", ""), known_models)
+            printer_model = self._detect_model_from_name(
+                dev.get("name", ""), known_models
+            )
             LOGGER.info(
                 "Discovered Brother printer: identifier=%s name=%s model=%s",
                 identifier,
@@ -122,7 +125,9 @@ class PrinterDiscovery(Discovery, EasyResource):
         try:
             from brother_ql.backends.pyusb import list_available_devices
         except ImportError:
-            LOGGER.error("brother_ql pyusb backend not available; cannot discover printers")
+            LOGGER.error(
+                "brother_ql pyusb backend not available; cannot discover printers"
+            )
             return []
 
         try:
@@ -132,6 +137,7 @@ class PrinterDiscovery(Discovery, EasyResource):
             return []
 
         from brother_ql.models import ModelsManager
+
         known_models = {m.identifier for m in ModelsManager().iter_elements()}
 
         configs: List[ComponentConfig] = []
@@ -171,6 +177,7 @@ class PrinterDiscovery(Discovery, EasyResource):
         """Try to read the USB product string and match it to a known brother_ql model."""
         try:
             import usb.util
+
             product_str = usb.util.get_string(dev, dev.iProduct)
             if not product_str:
                 return ""
@@ -178,7 +185,8 @@ class PrinterDiscovery(Discovery, EasyResource):
                 if model_id in product_str:
                     return model_id
             LOGGER.debug(
-                "USB product string '%s' did not match any known brother_ql model", product_str
+                "USB product string '%s' did not match any known brother_ql model",
+                product_str,
             )
         except Exception as e:
             LOGGER.debug("Could not read USB product string: %s", e)

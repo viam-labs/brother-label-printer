@@ -11,5 +11,5 @@ except ModuleNotFoundError:
     from .models.discovery import PrinterDiscovery  # noqa: F401
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(Module.run_from_registry())

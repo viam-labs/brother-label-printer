@@ -38,6 +38,7 @@ def _try_interpret_response(data: bytes) -> Optional[Dict[str, Any]]:
     """Wrapper around brother_ql's status interpreter."""
     try:
         from brother_ql.reader import interpret_response
+
         return interpret_response(data)
     except Exception:
         return None
@@ -83,8 +84,15 @@ def _ensure_helper() -> Optional[str]:
     try:
         subprocess.run(
             [
-                "clang", "-O2", "-o", out, src,
-                "-framework", "IOKit", "-framework", "CoreFoundation",
+                "clang",
+                "-O2",
+                "-o",
+                out,
+                src,
+                "-framework",
+                "IOKit",
+                "-framework",
+                "CoreFoundation",
             ],
             check=True,
             capture_output=True,
@@ -132,7 +140,8 @@ def send(
         except Exception as e:
             logger.warning(
                 "USB helper failed (%s: %s), trying CUPS fallback",
-                type(e).__name__, e,
+                type(e).__name__,
+                e,
             )
 
     # --- attempt 2: CUPS lpr ---
@@ -152,9 +161,7 @@ def send(
     except Exception as e:
         logger.error("CUPS backend also failed: %s: %s", type(e).__name__, e)
         status["outcome"] = "error"
-        raise RuntimeError(
-            f"All macOS backends failed for {printer_identifier}"
-        ) from e
+        raise RuntimeError(f"All macOS backends failed for {printer_identifier}") from e
 
 
 def _send_via_helper(
@@ -173,8 +180,10 @@ def _send_via_helper(
         os.close(fd)
 
         cmd = [
-            helper, "send",
-            f"0x{vid:04x}", f"0x{pid:04x}",
+            helper,
+            "send",
+            f"0x{vid:04x}",
+            f"0x{pid:04x}",
             data_path,
         ]
         if serial:
