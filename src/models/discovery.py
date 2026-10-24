@@ -1,16 +1,16 @@
 import sys
 from typing import Any, ClassVar, Dict, List, Mapping, Optional, Sequence, Tuple
 
-from typing_extensions import Self
 from google.protobuf.struct_pb2 import Struct
-from viam.services.discovery import Discovery
-from viam.resource.easy_resource import EasyResource
-from viam.resource.types import Model, ModelFamily
+from typing_extensions import Self
+from viam import logging
 from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import ResourceName
 from viam.resource.base import ResourceBase
+from viam.resource.easy_resource import EasyResource
+from viam.resource.types import Model, ModelFamily
+from viam.services.discovery import Discovery
 from viam.utils import ValueTypes
-from viam import logging
 
 LOGGER = logging.getLogger(__name__)
 

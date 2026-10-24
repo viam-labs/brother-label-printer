@@ -1,14 +1,15 @@
 import sys
 from typing import Any, ClassVar, Dict, Mapping, Optional, Sequence, Tuple
 
-from typing_extensions import Self
 from PIL import Image, ImageDraw, ImageFont
+from typing_extensions import Self
 
 # brother_ql uses PIL.Image.ANTIALIAS which was removed in Pillow 10+
 if not hasattr(Image, "ANTIALIAS"):
     Image.ANTIALIAS = Image.LANCZOS
-from brother_ql.raster import BrotherQLRaster
 from brother_ql.conversion import convert
+from brother_ql.labels import LabelsManager
+from brother_ql.raster import BrotherQLRaster
 from viam.components.generic import *
 from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import Geometry, ResourceName
@@ -16,7 +17,6 @@ from viam.resource.base import ResourceBase
 from viam.resource.easy_resource import EasyResource
 from viam.resource.types import Model, ModelFamily
 from viam.utils import ValueTypes
-from brother_ql.labels import LabelsManager
 
 
 class Printer(Generic, EasyResource):
