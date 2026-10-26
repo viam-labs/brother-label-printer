@@ -1,22 +1,22 @@
 import sys
 from typing import Any, ClassVar, Dict, Mapping, Optional, Sequence, Tuple
 
-from typing_extensions import Self
 from PIL import Image, ImageDraw, ImageFont
+from typing_extensions import Self
 
 # brother_ql uses PIL.Image.ANTIALIAS which was removed in Pillow 10+
 if not hasattr(Image, "ANTIALIAS"):
     Image.ANTIALIAS = Image.LANCZOS
-from brother_ql.raster import BrotherQLRaster
 from brother_ql.conversion import convert
-from viam.components.generic import *
+from brother_ql.labels import LabelsManager
+from brother_ql.raster import BrotherQLRaster
+from viam.components.generic import Generic
 from viam.proto.app.robot import ComponentConfig
 from viam.proto.common import Geometry, ResourceName
 from viam.resource.base import ResourceBase
 from viam.resource.easy_resource import EasyResource
 from viam.resource.types import Model, ModelFamily
 from viam.utils import ValueTypes
-from brother_ql.labels import LabelsManager
 
 
 class Printer(Generic, EasyResource):
@@ -61,7 +61,11 @@ class Printer(Generic, EasyResource):
         )
 
     def _create_image(self, text: str) -> Image.Image:
-        label = next(e for e in LabelsManager().iter_elements() if e.identifier == self.label_size)
+        label = next(
+            e
+            for e in LabelsManager().iter_elements()
+            if e.identifier == self.label_size
+        )
         w, h = label.dots_printable
         img = Image.new("RGB", (h, w), color="white")  # rotated 90 degrees
         draw = ImageDraw.Draw(img)
@@ -69,10 +73,14 @@ class Printer(Generic, EasyResource):
         font = ImageFont.load_default()
         while font_size >= 10:
             try:
-                f = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+                f = ImageFont.truetype(
+                    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size
+                )
             except OSError:
                 try:
-                    f = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", font_size)
+                    f = ImageFont.truetype(
+                        "/System/Library/Fonts/Helvetica.ttc", font_size
+                    )
                 except OSError:
                     break
             bbox = draw.textbbox((0, 0), text, font=f)
@@ -91,7 +99,7 @@ class Printer(Generic, EasyResource):
         command: Mapping[str, ValueTypes],
         *,
         timeout: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> Mapping[str, ValueTypes]:
         text = command.get("text")
         if not text:
@@ -99,21 +107,28 @@ class Printer(Generic, EasyResource):
 
         self.logger.info(
             "do_command called: text=%r, printer_model=%r, label_size=%r, printer_identifier=%r",
-            text, self.printer_model, self.label_size, self.printer_identifier,
+            text,
+            self.printer_model,
+            self.label_size,
+            self.printer_identifier,
         )
 
         self.logger.debug("Creating label image for text=%r", text)
         img = self._create_image(str(text))
         self.logger.debug("Image created: size=%s, mode=%s", img.size, img.mode)
 
-        self.logger.debug("Initializing BrotherQLRaster with model=%r", self.printer_model)
+        self.logger.debug(
+            "Initializing BrotherQLRaster with model=%r", self.printer_model
+        )
         qlr = BrotherQLRaster(self.printer_model)
 
         self.logger.debug(
             "Running convert: label_size=%r, rotate='90', cut=True", self.label_size
         )
         convert(qlr, [img], self.label_size, rotate="90", cut=True)
-        self.logger.debug("Convert complete, instruction data length=%d bytes", len(qlr.data))
+        self.logger.debug(
+            "Convert complete, instruction data length=%d bytes", len(qlr.data)
+        )
 
         if sys.platform == "darwin":
             result = self._send_macos(qlr.data)
@@ -148,7 +163,8 @@ class Printer(Generic, EasyResource):
         backend_identifier = "pyusb"
         self.logger.info(
             "Sending to printer via pyusb: printer_identifier=%r, backend_identifier=%r",
-            self.printer_identifier, backend_identifier,
+            self.printer_identifier,
+            backend_identifier,
         )
         return send(
             instructions=instructions,

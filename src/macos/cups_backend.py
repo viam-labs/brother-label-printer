@@ -68,7 +68,8 @@ class CUPSPrinterBackend:
     def write(self, data: bytes) -> int:
         logger.info(
             "Sending %d bytes to CUPS printer %s via lpr -l",
-            len(data), self._printer_name,
+            len(data),
+            self._printer_name,
         )
 
         # Write to a temp file — some CUPS backends handle files more
@@ -82,9 +83,11 @@ class CUPSPrinterBackend:
             # -o raw = additional hint to skip filters
             cmd = [
                 "lpr",
-                "-P", self._printer_name,
+                "-P",
+                self._printer_name,
                 "-l",
-                "-o", "raw",
+                "-o",
+                "raw",
                 path,
             ]
             logger.debug("Running: %s", " ".join(cmd))

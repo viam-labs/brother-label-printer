@@ -103,6 +103,7 @@ def _cfnum32(val: int) -> ctypes.c_void_p:
 # CFUUIDRef  — opaque pointer used by IOCreatePlugInInterfaceForService
 # ---------------------------------------------------------------------------
 
+
 class CFUUIDBytes(ctypes.Structure):
     _fields_ = [(f"byte{i}", ctypes.c_uint8) for i in range(16)]
 
@@ -127,26 +128,96 @@ def _make_uuid_bytes(*byte_args: int) -> CFUUIDBytes:
 
 # IOCreatePlugInInterfaceForService needs CFUUIDRef (pointer), not CFUUIDBytes
 _kIOUSBDeviceUserClientTypeID_ref = _make_uuid_ref(
-    0x9D, 0xC7, 0xB7, 0x80, 0x9E, 0xC0, 0x11, 0xD4,
-    0xA5, 0x4F, 0x00, 0x0A, 0x27, 0x05, 0x28, 0x61,
+    0x9D,
+    0xC7,
+    0xB7,
+    0x80,
+    0x9E,
+    0xC0,
+    0x11,
+    0xD4,
+    0xA5,
+    0x4F,
+    0x00,
+    0x0A,
+    0x27,
+    0x05,
+    0x28,
+    0x61,
 )
 _kIOCFPlugInInterfaceID_ref = _make_uuid_ref(
-    0xC2, 0x44, 0xE8, 0x58, 0x10, 0x9C, 0x11, 0xD4,
-    0x91, 0xD4, 0x00, 0x50, 0xE4, 0xC6, 0x42, 0x6F,
+    0xC2,
+    0x44,
+    0xE8,
+    0x58,
+    0x10,
+    0x9C,
+    0x11,
+    0xD4,
+    0x91,
+    0xD4,
+    0x00,
+    0x50,
+    0xE4,
+    0xC6,
+    0x42,
+    0x6F,
 )
 _kIOUSBInterfaceUserClientTypeID_ref = _make_uuid_ref(
-    0x2D, 0x97, 0x86, 0xC6, 0x9E, 0xF3, 0x11, 0xD4,
-    0xAD, 0x51, 0x00, 0x0A, 0x27, 0x05, 0x28, 0x61,
+    0x2D,
+    0x97,
+    0x86,
+    0xC6,
+    0x9E,
+    0xF3,
+    0x11,
+    0xD4,
+    0xAD,
+    0x51,
+    0x00,
+    0x0A,
+    0x27,
+    0x05,
+    0x28,
+    0x61,
 )
 
 # QueryInterface needs CFUUIDBytes (struct by value)
 _kIOUSBDeviceInterfaceID_bytes = _make_uuid_bytes(
-    0x5C, 0x81, 0x87, 0xD0, 0x9E, 0xF3, 0x11, 0xD4,
-    0x8B, 0x45, 0x00, 0x0A, 0x27, 0x05, 0x28, 0x61,
+    0x5C,
+    0x81,
+    0x87,
+    0xD0,
+    0x9E,
+    0xF3,
+    0x11,
+    0xD4,
+    0x8B,
+    0x45,
+    0x00,
+    0x0A,
+    0x27,
+    0x05,
+    0x28,
+    0x61,
 )
 _kIOUSBInterfaceInterfaceID_bytes = _make_uuid_bytes(
-    0x73, 0xC9, 0x7A, 0xE8, 0x9E, 0xF3, 0x11, 0xD4,
-    0xB1, 0xD0, 0x00, 0x0A, 0x27, 0x05, 0x28, 0x61,
+    0x73,
+    0xC9,
+    0x7A,
+    0xE8,
+    0x9E,
+    0xF3,
+    0x11,
+    0xD4,
+    0xB1,
+    0xD0,
+    0x00,
+    0x0A,
+    0x27,
+    0x05,
+    0x28,
+    0x61,
 )
 
 # ---------------------------------------------------------------------------
@@ -172,24 +243,25 @@ _iokit.IOObjectRelease.argtypes = [ctypes.c_uint32]
 # pluginType and interfaceType are CFUUIDRef (c_void_p), NOT CFUUIDBytes
 _iokit.IOCreatePlugInInterfaceForService.restype = ctypes.c_int32
 _iokit.IOCreatePlugInInterfaceForService.argtypes = [
-    ctypes.c_uint32,    # service (io_service_t)
-    ctypes.c_void_p,    # pluginType (CFUUIDRef)
-    ctypes.c_void_p,    # interfaceType (CFUUIDRef)
+    ctypes.c_uint32,  # service (io_service_t)
+    ctypes.c_void_p,  # pluginType (CFUUIDRef)
+    ctypes.c_void_p,  # interfaceType (CFUUIDRef)
     ctypes.POINTER(ctypes.c_void_p),  # theInterface (IOCFPlugInInterface ***)
-    ctypes.POINTER(ctypes.c_int32),   # theScore*
+    ctypes.POINTER(ctypes.c_int32),  # theScore*
 ]
 
 _iokit.IORegistryEntryCreateCFProperty.restype = ctypes.c_void_p
 _iokit.IORegistryEntryCreateCFProperty.argtypes = [
-    ctypes.c_uint32,   # entry
-    ctypes.c_void_p,   # key (CFStringRef)
-    ctypes.c_void_p,   # allocator
-    ctypes.c_uint32,   # options
+    ctypes.c_uint32,  # entry
+    ctypes.c_void_p,  # key (CFStringRef)
+    ctypes.c_void_p,  # allocator
+    ctypes.c_uint32,  # options
 ]
 
 # ---------------------------------------------------------------------------
 # IOUSBFindInterfaceRequest struct
 # ---------------------------------------------------------------------------
+
 
 class IOUSBFindInterfaceRequest(ctypes.Structure):
     _fields_ = [
@@ -208,6 +280,7 @@ class IOUSBFindInterfaceRequest(ctypes.Structure):
 #   [0] _reserved   [1] QueryInterface   [2] AddRef   [3] Release
 # Then the type-specific methods follow at index 4+.
 # ---------------------------------------------------------------------------
+
 
 def _vtable(dbl_ptr: ctypes.c_void_p) -> ctypes.Array:
     """Dereference a COM double-pointer to get the vtable as an array of void*."""
@@ -312,6 +385,7 @@ _INTF_WRITE_PIPE = 30
 # Custom exception
 # ---------------------------------------------------------------------------
 
+
 class IOKitError(Exception):
     pass
 
@@ -319,6 +393,7 @@ class IOKitError(Exception):
 # ---------------------------------------------------------------------------
 # IOKitUSBDevice — wraps IOKit for USB bulk I/O
 # ---------------------------------------------------------------------------
+
 
 class IOKitUSBDevice:
     """Open a USB device by vendor/product ID and perform bulk I/O.
@@ -354,9 +429,7 @@ class IOKitUSBDevice:
     # ----- discovery via IOKit registry (matches a single device) ----------
 
     @staticmethod
-    def _find_service(
-        vendor_id: int, product_id: int, serial: Optional[str]
-    ) -> int:
+    def _find_service(vendor_id: int, product_id: int, serial: Optional[str]) -> int:
         """Find the io_service_t for the matching USB device."""
         for class_name in (b"IOUSBHostDevice", b"IOUSBDevice"):
             matching = _iokit.IOServiceMatching(class_name)
@@ -382,7 +455,8 @@ class IOKitUSBDevice:
             if kr != KERN_SUCCESS:
                 logger.debug(
                     "IOServiceGetMatchingServices(%s) returned 0x%08X",
-                    class_name, kr,
+                    class_name,
+                    kr,
                 )
                 continue
 
@@ -399,7 +473,9 @@ class IOKitUSBDevice:
                     _cf.CFRelease(serial_key)
                     if cf_serial:
                         buf = ctypes.create_string_buffer(256)
-                        _cf.CFStringGetCString(cf_serial, buf, 256, kCFStringEncodingUTF8)
+                        _cf.CFStringGetCString(
+                            cf_serial, buf, 256, kCFStringEncodingUTF8
+                        )
                         _cf.CFRelease(cf_serial)
                         if buf.value.decode("utf-8", errors="replace") != serial:
                             _iokit.IOObjectRelease(service)
@@ -407,7 +483,9 @@ class IOKitUSBDevice:
 
                 logger.info(
                     "Found USB service via %s for vendor=0x%04x product=0x%04x",
-                    class_name.decode(), vendor_id, product_id,
+                    class_name.decode(),
+                    vendor_id,
+                    product_id,
                 )
                 _iokit.IOObjectRelease(iterator.value)
                 return service
@@ -416,8 +494,7 @@ class IOKitUSBDevice:
 
         raise IOKitError(
             f"No USB device found with vendor=0x{vendor_id:04x} "
-            f"product=0x{product_id:04x}"
-            + (f" serial={serial}" if serial else "")
+            f"product=0x{product_id:04x}" + (f" serial={serial}" if serial else "")
         )
 
     # ----- device open + interface setup -----------------------------------
@@ -437,7 +514,9 @@ class IOKitUSBDevice:
             raise IOKitError(f"IOCreatePlugInInterfaceForService failed: 0x{kr:08X}")
 
         try:
-            self._device_iface = _query_interface(plugin, _kIOUSBDeviceInterfaceID_bytes)
+            self._device_iface = _query_interface(
+                plugin, _kIOUSBDeviceInterfaceID_bytes
+            )
         finally:
             _release(plugin)
 
@@ -494,7 +573,8 @@ class IOKitUSBDevice:
             if kr != kIOReturnSuccess:
                 logger.debug(
                     "CreateInterfaceIterator(class=%d) failed: 0x%08X",
-                    intf_class, kr & 0xFFFFFFFF,
+                    intf_class,
+                    kr & 0xFFFFFFFF,
                 )
                 continue
 
@@ -584,7 +664,8 @@ class IOKitUSBDevice:
         )
         logger.info(
             "GetNumEndpoints returned 0x%08X, num_endpoints=%d",
-            kr & 0xFFFFFFFF, num_ep.value,
+            kr & 0xFFFFFFFF,
+            num_ep.value,
         )
 
         for pipe_ref in range(1, num_ep.value + 1):
@@ -618,8 +699,13 @@ class IOKitUSBDevice:
             logger.info(
                 "Pipe %d: direction=%d number=%d transfer_type=%d "
                 "max_packet=%d interval=%d (IOReturn=0x%08X)",
-                pipe_ref, direction.value, number.value, transfer_type.value,
-                max_packet.value, interval.value, kr & 0xFFFFFFFF,
+                pipe_ref,
+                direction.value,
+                number.value,
+                transfer_type.value,
+                max_packet.value,
+                interval.value,
+                kr & 0xFFFFFFFF,
             )
 
             if transfer_type.value == kUSBBulk:
@@ -638,7 +724,8 @@ class IOKitUSBDevice:
 
         logger.info(
             "Pipe setup complete: bulk_out=%d bulk_in=%d",
-            self._bulk_out_pipe, self._bulk_in_pipe,
+            self._bulk_out_pipe,
+            self._bulk_in_pipe,
         )
 
     # ----- public I/O API --------------------------------------------------
